@@ -1,0 +1,95 @@
+{%extends 'index.html'%}
+
+{%block title%}
+<title>Lista de coches</title>
+{%endblock title%}
+
+{% load humanize %}
+
+{%block content%}
+<div class="container">
+
+    <div class="my-5 d-flex justify-content-center">
+        <a href="{% url 'cars_create' %}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow">
+            <i class="bi bi-plus-circle-dotted"></i> Añadir coche
+        </a>
+    </div>
+
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for car in cars %}
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 card-hover">
+                    
+                    <div class="position-relative overflow-hidden hover-container">
+                        {% if car.imagen %}
+                            <img src="{{ car.imagen.url }}" class="card-img-top blur-target" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top blur-target d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
+                                <i class="bi bi-image fs-1"></i>
+                            </div>
+                        {% endif %}
+
+                        <div class="hover-overlay position-absolute top-50 start-50 translate-middle">
+                            <a href="{% url 'car_detail' car.id %}" class="btn btn-dark rounded-pill">
+                                <i class="bi bi-eye-fill"></i> Ver detalles
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ car }}</h5>
+                        <p class="card-text text-muted small">
+                            <span class="badge bg-light text-dark border">{{ car.combustible }}</span>
+                            <span class="ms-2">
+                                {% if car.kilometros >= 1000 %}
+                                    {{ car.kilometros|intcomma }} km
+                                {% else %}
+                                    {{ car.kilometros }} km
+                                {% endif %}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="card-footer bg-white d-flex justify-content-between border-0 pb-3">
+                        <a href="{% url 'cars_edit' car.id %}" class="btn btn-sm btn-warning rounded-4">
+                            <i class="bi bi-pencil me-2"></i> Editar
+                        </a>
+
+                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#deleteModal{{ car.pk }}">
+                            <i class="bi bi-trash"></i> Eliminar
+                        </button>
+                    </div>
+
+                    <div class="card-footer shadow">
+                        <small class="text-body-secondary">Creado por: {{ car.creado_por }}</small>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal fade" id="deleteModal{{ car.pk }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <div class="modal-header bg-danger text-white rounded-top-4 p-4">
+                            <h5 class="modal-title fw-bold"><i class="bi bi-exclamation-triangle-fill me-2"></i> ¿Eliminar Vehículo?</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body p-4 text-center">
+                            <p class="fs-5 mb-1">Vas a eliminar el <strong>{{ car.marca }} {{ car.modelo }}</strong></p>
+                            <p class="text-muted small">Esta acción es irreversible y el stock se perderá permanentemente.</p>
+                        </div>
+                        <div class="modal-footer border-0 p-4 pt-0 d-flex justify-content-center">
+                            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                            <form action="{% url 'cars_delete' car.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">Confirmar Eliminación</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{%endblock content%}

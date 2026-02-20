@@ -1,0 +1,108 @@
+{% extends "index.html" %}
+
+{% block title %}
+<title>Añadir empleado | AutoManage</title>
+{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/employees_create.css' %}">
+
+<div class="container mt-5 mb-5 px-3 px-lg-0">
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="sticky-top" style="top: 2rem;">
+                <div class="card shadow-lg border-0 overflow-hidden rounded-4 text-center p-5 bg-white">
+                    <div id="photoDisplay" class="mb-4">
+                        <div class="position-relative d-inline-block">
+                            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" 
+                                 id="profilePreview" 
+                                 class="rounded-circle shadow border" 
+                                 style="width: 180px; height: 180px; object-fit: cover; border: 5px solid #fcfcfc !important;">
+                            <div class="position-absolute bottom-0 end-0 bg-danger text-white rounded-circle d-flex align-items-center justify-content-center shadow" 
+                                 style="width: 45px; height: 45px; border: 3px solid white;">
+                                <i class="bi bi-person-plus fs-5"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <h3 class="fw-bold mb-1 text-dark" id="previewFullName">Nuevo Empleado</h3>
+                    <p class="text-danger fw-bold small text-uppercase mb-4" id="previewRole">Puesto / Cargo</p>
+                    <div class="p-3 rounded-4 bg-light text-center">
+                        <div id="file-status" class="small fw-bold text-muted mb-2">Previsualización de perfil</div>
+                        <button type="button" id="btnRemovePhoto" class="btn btn-outline-danger btn-sm rounded-pill px-3" style="display: none; font-size: 0.7rem;">
+                            <i class="bi bi-trash me-1"></i> Eliminar Foto
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <form method="POST" enctype="multipart/form-data" id="employeeForm">
+                {% csrf_token %}
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-dark text-white p-4">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-person-plus-fill me-2 text-danger"></i>Alta de Empleado</h4>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        <div class="row">
+                            {% for field in employees_form %}
+                                {% if field.name != "old_password" %}
+                                <div class="col-md-6 mb-3">
+                                    <label class="fw-bold small text-dark opacity-75 mb-2">
+                                        {{ field.label }}
+                                        {% if field.name == "password" %}
+                                            <i class="bi bi-info-circle-fill text-primary ms-1" 
+                                               style="cursor: pointer;"
+                                               data-bs-toggle="popover" 
+                                               data-bs-trigger="hover focus" 
+                                               data-bs-placement="top" 
+                                               data-bs-html="true"
+                                               title="Seguridad"
+                                               data-bs-content="<small>• Mínimo 8 caracteres<br>• Una mayúscula<br>• Un número</small>">
+                                            </i>
+                                        {% endif %}
+                                    </label>
+
+                                    {% if field.name == "password" %}
+                                        <div class="input-group custom-pass-group">
+                                            <input type="password" name="{{ field.name }}" id="id_password" class="form-control border-0 bg-transparent shadow-none" style="padding: 0.75rem 1rem;" required>
+                                            <button class="btn border-0 bg-transparent text-muted px-3" type="button" onclick="togglePassword(this)">
+                                                <i class="bi bi-eye-fill"></i>
+                                            </button>
+                                        </div>
+                                        <div id="password-error" class="text-danger mt-1 fw-bold d-none" style="font-size: 0.75rem;">
+                                            La contraseña debe tener 8+ caracteres, una mayúscula y un número.
+                                        </div>
+                                    {% else %}
+                                        <div class="field-container">
+                                            {{ field }}
+                                        </div>
+                                    {% endif %}
+
+                                    {% if field.errors %}
+                                        <div class="text-danger mt-1 fw-bold" style="font-size: 0.75rem;">
+                                            {{ field.errors|first }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="card-footer bg-light p-4 d-flex gap-3 justify-content-end border-0 rounded-bottom-4">
+                        <a href="{% url 'employees' %}" class="btn btn-light rounded-pill px-4 border fw-bold text-muted">Cancelar</a>
+                        <button type="submit" id="btnSubmit" class="btn btn-danger rounded-pill px-5 fw-bold shadow">
+                            Registrar Empleado
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/employees_create.js'%}"></script>
+<script src="{% static 'js/toggle_password.js'%}"></script>
+{% endblock content %}

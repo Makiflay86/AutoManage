@@ -1,0 +1,119 @@
+{% extends "index.html" %}
+
+{% block title %}
+<title>Editar empleado | AutoManage</title>
+{% endblock title %}
+
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/employee_edit.css' %}">
+
+<div class="container mt-5 mb-5 px-3">
+    <div class="row g-4">
+        <div class="col-md-5">
+            <div class="card shadow-lg border-0 rounded-4 text-center p-5 bg-white">
+                <div class="mb-4">
+                    {% if employee.foto %}
+                        <img src="{{ employee.foto.url }}" id="profilePreview" class="rounded-circle border" style="width: 180px; height: 180px; object-fit: cover;">
+                    {% else %}
+                        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" id="profilePreview" class="rounded-circle border" style="width: 180px; height: 180px;">
+                    {% endif %}
+                </div>
+                <h3 class="fw-bold">{{ employee.nombre }}</h3>
+                <p class="text-danger fw-bold text-uppercase">{{ employee.puesto }}</p>
+                
+                {% if employee.foto %}
+                <button type="button" class="btn btn-outline-danger btn-sm rounded-pill shadow-sm" data-bs-toggle="modal" data-bs-target="#deletePhotoModal">
+                    <i class="bi bi-trash"></i> Eliminar Foto
+                </button>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="checkbox" name="foto-clear" id="foto-clear_id" style="display: none;">
+                
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-header bg-dark text-white p-4">
+                        <h4 class="mb-0 fw-bold"><i class="bi bi-shield-lock me-2 text-danger"></i>Seguridad de Cuenta</h4>
+                    </div>
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <div class="row align-items-center mb-4">
+                            <div class="col-lg-4"><label class="fw-bold small text-uppercase">Nombre de usuario</label></div>
+                            <div class="col-lg-8"><input type="text" name="username" value="{{ employee.user.username }}" class="form-control custom-input"></div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-lg-4"><label class="fw-bold small text-uppercase">Apellidos</label></div>
+                            <div class="col-lg-8"><input type="text" name="apellidos" value="{{ employee.apellidos }}" class="form-control custom-input"></div>
+                        </div>
+
+                        <hr class="my-4 opacity-50">
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-lg-4">
+                                <label class="fw-bold small text-uppercase text-danger">Contraseña Actual *</label>
+                            </div>
+                            <div class="col-lg-8">
+                                <div class="input-group custom-pass-group border-danger">
+                                    <input type="password" name="old_password" class="form-control border-0 bg-transparent custom-input" placeholder="Requerido para cualquier cambio" required>
+                                    <button class="btn border-0" type="button" onclick="togglePassword(this)"><i class="bi bi-eye-fill"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-lg-4"><label class="fw-bold small text-uppercase">Nueva Contraseña</label></div>
+                            <div class="col-lg-8">
+                                <div class="input-group custom-pass-group">
+                                    <input type="password" name="password" class="form-control border-0 bg-transparent custom-input" placeholder="Dejar en blanco para no cambiar">
+                                    <button class="btn border-0" type="button" onclick="togglePassword(this)"><i class="bi bi-eye-fill"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4 opacity-50">
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-lg-4"><label class="fw-bold small text-uppercase">Puesto</label></div>
+                            <div class="col-lg-8"><input type="text" name="puesto" value="{{ employee.puesto }}" class="form-control custom-input"></div>
+                        </div>
+
+                        <div class="row align-items-center mb-4">
+                            <div class="col-lg-4"><label class="fw-bold small text-uppercase">Foto</label></div>
+                            <div class="col-lg-8"><input type="file" name="foto" class="form-control custom-input pt-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light p-4 d-flex gap-3 justify-content-end rounded-bottom-4">
+                        <a href="{% url 'employees' %}" class="btn btn-light rounded-pill px-4 border">Cancelar</a>
+                        <button type="submit" class="btn btn-danger rounded-pill px-5 fw-bold shadow">Guardar Cambios</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deletePhotoModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content rounded-4 border-0 shadow">
+            <div class="modal-header border-0 p-4 pb-0">
+                <h5 class="fw-bold">¿Eliminar imagen de perfil?</h5>
+            </div>
+            <div class="modal-body p-4 text-muted">Esta acción quitará la foto actual. Recuerda guardar cambios después.</div>
+            <div class="modal-footer border-0 p-4">
+                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger rounded-pill px-4" id="confirmDelete">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/employee_edit.js'%}"></script>
+<script src="{% static 'js/toggle_password.js'%}"></script>
+{% endblock content %}

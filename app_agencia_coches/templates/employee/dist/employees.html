@@ -1,0 +1,84 @@
+{%extends 'index.html'%}
+
+{% block title %}
+<title>Lista de Empleados</title>
+{% endblock title %}
+
+{% block content %}
+<div class="container">
+
+    <div class="my-5 d-flex justify-content-center">
+        <a href="{% url 'employees_create' %}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow">
+            <i class="bi bi-plus-circle-dotted"></i> Añadir empleado
+        </a>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for employee in employees %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 card-hover">
+                    
+                    <div class="position-relative overflow-hidden hover-container">
+                        {% if employee.foto %}
+                            <img src="{{ employee.foto.url }}" class="card-img-top blur-target" style="height: 200px; object-fit: cover;">
+                        {% else %}
+                            <div class="card-img-top blur-target d-flex justify-content-center align-items-center bg-light" style="height: 200px;">
+                                <i class="bi bi-image fs-1"></i>
+                            </div>
+                        {% endif %}
+
+                        <div class="hover-overlay position-absolute top-50 start-50 translate-middle">
+                            <a href="{% url 'employee_detail' employee.id %}" class="btn btn-dark rounded-pill">
+                                <i class="bi bi-eye-fill"></i> Ver detalles
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ employee.nombre }} {{ employee.apellidos }}</h5>
+                        <p class="card-text text-muted small">
+                            <span class="badge bg-light text-dark border">{{ employee.puesto }}</span>
+                        </p>
+                    </div>
+                    
+                    <div class="card-footer bg-white d-flex justify-content-between border-0 pb-3 shadow">
+                        <a href="{% url 'employee_edit' employee.pk %}" class="btn btn-sm btn-warning rounded-4">
+                            <i class="bi bi-pencil me-2"></i> Editar
+                        </a>
+                        
+                        <button type="button" class="btn btn-sm btn-outline-danger rounded-pill" data-bs-toggle="modal" data-bs-target="#deleteEmpModal{{ employee.pk }}">
+                            <i class="bi bi-person-x"></i> Dar de baja
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="deleteEmpModal{{ employee.pk }}" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content border-0 shadow-lg rounded-4">
+                        <div class="modal-header bg-dark text-white rounded-top-4 p-4">
+                            <h5 class="modal-title fw-bold"><i class="bi bi-person-dash-fill me-2 text-danger"></i>¿Eliminar Empleado?</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body p-4 text-center">
+                            {% if employee.foto %}
+                                <img src="{{ employee.foto.url }}" class="rounded-circle mb-3 shadow-sm" style="width: 80px; height: 80px; object-fit: cover;">
+                            {% endif %}
+                            <p class="fs-5 mb-1">Vas a eliminar a <strong>{{ employee.user.username }}</strong></p>
+                            <p class="text-muted small">Se perderá el acceso de este usuario al panel de control de la agencia.</p>
+                        </div>
+                        <div class="modal-footer border-0 p-4 pt-0 d-flex justify-content-center">
+                            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancelar</button>
+                            <form action="{% url 'employee_delete' employee.pk %}" method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-danger rounded-pill px-4 fw-bold shadow-sm">Confirmar Baja</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}
