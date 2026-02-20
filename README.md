@@ -18,7 +18,7 @@ Sistema de gestión de flotas y empleados desarrollado con Django. Permite el co
 
 ## Instalación (clonando el repositorio)
 
-1. Clonar el repositorio: `git clone https://github.com/Makiflay86/agencia_coches `
+1. Clonar el repositorio: `git clone https://github.com/Makiflay86/AutoManage`
 
 2. Instalar dependencias: `pip install django pillow`.
 
