@@ -20,13 +20,15 @@ Sistema de gestión de flotas y empleados desarrollado con Django. Permite el co
 
 1. Clonar el repositorio: `git clone https://github.com/Makiflay86/AutoManage`
 
-2. Instalar dependencias: `pip install django pillow`.
+2. Nos metemos a su directorio: `cd AutoManage`
 
-3. Preparar la base de datos: `python manage.py migrate`.
+3. Instalar dependencias: `python -m pip install django pillow`.
 
-4. Arrancar el servidor: `python manage.py runserver`.
+4. Preparar la base de datos: `python manage.py migrate`.
 
-5. Ejecución del servidor: http://127.0.0.1:8000/
+5. Arrancar el servidor: `python manage.py runserver`.
+
+6. Ejecución del servidor: http://127.0.0.1:8000/
 
 
 
